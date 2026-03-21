@@ -37,17 +37,18 @@ jobs:
 
       - name: Terragrunt Action
         id: tg_action
+        env:
+          TERRAGRUNT_NON_INTERACTIVE: "true"
+          TF_CLI_ARGS_apply: "-auto-approve"
+          TF_CLI_ARGS_destroy: "-auto-approve"
         run: |
           cd infra/live
           if [ "${{ github.event.inputs.action }}" == "apply" ]; then
-            # Move the flag BEFORE 'run-all'
-            terragrunt --terragrunt-non-interactive run-all apply --auto-approve
-            
+            terragrunt run-all apply
             CF_DOMAIN=$(cd cloudfront && terragrunt output -raw domain_name)
             echo "CF_DOMAIN=$CF_DOMAIN" >> $GITHUB_ENV
           else
-            # Move the flag BEFORE 'run-all'
-            terragrunt --terragrunt-non-interactive run-all destroy --auto-approve
+            terragrunt run-all destroy
           fi
 
       - name: Setup Python
