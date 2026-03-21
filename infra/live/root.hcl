@@ -20,8 +20,8 @@ remote_state {
     dynamodb_table = "terraform-lock-table"
     
     s3_bucket_tags = {
-      Owner     = local.common_vars.owner
-      Project   = local.common_vars.project_name
+      Owner     = local.common_vars.Owner
+      Project   = local.common_vars.Project_name
       Name      = "TerraformStateBucket"
       Terraform = "true"
     }
