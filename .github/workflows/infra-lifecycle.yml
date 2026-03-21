@@ -50,7 +50,7 @@ jobs:
             
             # Use 'run -- output' and ensure we are in the cloudfront subdir
             # Adding --terragrunt-no-auto-init prevents extra log noise
-            CF_DOMAIN=$(cd cloudfront && terragrunt run --terragrunt-no-auto-init -- output -raw domain_name)
+            CF_DOMAIN=$(cd cloudfront && terragrunt run --no-auto-init -- output -raw domain_name)
             echo "CF_DOMAIN=$CF_DOMAIN" >> $GITHUB_ENV
           else
             terragrunt run --all destroy -- -auto-approve
