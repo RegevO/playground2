@@ -33,20 +33,22 @@ jobs:
       - name: Setup Terragrunt
         uses: autero1/action-terragrunt@v3
         with:
-          terragrunt-version: 0.99.4
+          terragrunt-version: 0.98.0
 
       - name: Terragrunt Action
         id: tg_action
+        env:
+          TF_VAR_auto_approve: true # Standard fallback
         run: |
           cd infra/live
           if [ "${{ github.event.inputs.action }}" == "apply" ]; then
-            terragrunt run-all apply --auto-approve
+            # Using the --terragrunt-non-interactive at the end
+            terragrunt run-all apply --terragrunt-non-interactive
             
-            # Capture the CloudFront domain for the processor
             CF_DOMAIN=$(cd cloudfront && terragrunt output -raw domain_name)
             echo "CF_DOMAIN=$CF_DOMAIN" >> $GITHUB_ENV
           else
-            terragrunt run-all destroy --auto-approve
+            terragrunt run-all destroy --terragrunt-non-interactive
           fi
 
       - name: Setup Python
