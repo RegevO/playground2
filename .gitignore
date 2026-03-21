@@ -1,39 +1,22 @@
-# --- Terragrunt / Terraform Caches ---
+# --- Terragrunt / Terraform ---
 .terragrunt-cache/
 .terraform/
-
-# --- State Files ---
 *.tfstate
 *.tfstate.*
-.terraform.tfstate.lock.info
+.terraform.lock.hcl
 
-# --- Sensitive Data ---
-# Potential secrets in variable files
+# --- Secrets & Environment ---
 *.tfvars
 *.tfvars.json
 .env
 .env.*
 
-# --- Provider / CLI Config ---
-.terraformrc
-terraform.rc
-.terraform.lock.hcl
-
-# --- Logs & Debugging ---
-crash.log
-crash.*.log
-*.log
-terraform.log
-terragrunt-debug.tfvars.json
-
-# --- OS Specific ---
-.DS_Store
-Thumbs.db
-
-# --- Python (Since we have the app/ directory) ---
+# --- Python ---
 __pycache__/
 *.py[cod]
-*$py.class
-.venv/
 venv/
-ENV/
+.venv/
+
+# --- Logs & OS ---
+*.log
+.DS_Store

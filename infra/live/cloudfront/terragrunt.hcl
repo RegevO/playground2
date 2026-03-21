@@ -17,8 +17,8 @@ inputs = {
   s3_bucket_domain = dependency.s3.outputs.bucket_regional_domain_name
   
   tags = {
-    Owner     = "Regev Osher"
-    Terraform = "True"
-    Name      = "ProductCloudFront"
+    tags = {
+      Name = "ProductCloudFront"
+    }
   }
 }

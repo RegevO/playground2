@@ -14,8 +14,6 @@ inputs = {
   
   # Ensure these are passed to the 'tags' variable in your module
   tags = {
-    Owner     = "Regev Osher"
-    Terraform = "True"
     Name      = "ProductS3Bucket"
   }
 }
