@@ -1,4 +1,4 @@
-name: "Infrastructure Lifecycle"
+name: "🚀 Production: Infra & Data Pipeline"
 
 on:
   workflow_dispatch:
@@ -13,37 +13,39 @@ on:
           - destroy
 
 jobs:
-  terragrunt:
+  orchestrate:
+    name: "🏗️ ${{ github.event.inputs.action || 'Apply' }} Infrastructure"
     runs-on: ubuntu-latest
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: 'us-east-1'
+      ACTION: ${{ github.event.inputs.action || 'apply' }}
 
     steps:
-      - name: Checkout code
+      - name: "📦 Checkout code"
         uses: actions/checkout@v4
 
-      - name: Setup Terraform
+      - name: "🛠️ Setup Terraform"
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.14.7
           terraform_wrapper: false
 
-      - name: Setup Terragrunt
+      - name: "🛠️ Setup Terragrunt"
         uses: autero1/action-terragrunt@v3
         with:
           terragrunt-version: 0.98.0
       
-      - name: Terragrunt Action
+      - name: "🚀 Execute Terragrunt ${{ env.ACTION }}"
         id: tg_action
         env:
           TG_NON_INTERACTIVE: "true"
           # This environment variable forces Terragrunt to use the old-style run-all 
           # which is more stable for standard folder structures in v0.98
           TG_COMMAND_STRATEGY: "run-all" 
+          working-directory: infra/live
         run: |
-          cd infra/live
           if [ "${{ github.event.inputs.action }}" == "apply" ]; then
             # We use 'run --all' which is the modern bridge to 'run-all'
             terragrunt run --all apply -- -auto-approve
@@ -56,17 +58,22 @@ jobs:
             terragrunt run --all destroy -- -auto-approve
           fi
 
-      - name: Setup Python
+      - name: "🐍 Setup Python"
         if: github.event.inputs.action == 'apply'
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
 
-      - name: Install dependencies
+      - name: "🐍 Install dependencies"
         if: github.event.inputs.action == 'apply'
-        run: pip install requests boto3
+        run: pip install -r app/requirements.txt
 
-      - name: Run Processor & Dynamic Verify
+      - name: "🐍 Run Application Logic"
         if: github.event.inputs.action == 'apply'
         run: |
           python app/processor.py ${{ env.CF_DOMAIN }}
+
+      - name: "📊 Final Summary"
+        if: always()
+        run: |
+          echo "### 🏁 Execution Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
