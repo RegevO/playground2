@@ -34,7 +34,7 @@ jobs:
         uses: autero1/action-terragrunt@v3
         with:
           terragrunt-version: 0.98.0
-
+      
       - name: Terragrunt Action
         id: tg_action
         env:
@@ -42,15 +42,15 @@ jobs:
         run: |
           cd infra/live
           if [ "${{ github.event.inputs.action }}" == "apply" ]; then
-            # The '--' is mandatory to forward -auto-approve to Terraform
-            terragrunt run-all apply -- -auto-approve
+            # In v0.9x, 'stack apply' is the modern 'run-all apply'
+            terragrunt stack apply -- -auto-approve
             
-            # Use the new 'run' syntax for output to be safe in 0.98+
-            CF_DOMAIN=$(cd cloudfront && terragrunt run -- terragrunt output -raw domain_name)
+            # Use 'run --' to extract the output from the cloudfront module
+            CF_DOMAIN=$(cd cloudfront && terragrunt run -- output -raw domain_name)
             echo "CF_DOMAIN=$CF_DOMAIN" >> $GITHUB_ENV
           else
-            # The '--' is mandatory here too
-            terragrunt run-all destroy -- -auto-approve
+            # 'stack destroy' handles the entire dependency tree
+            terragrunt stack destroy -- -auto-approve
           fi
 
       - name: Setup Python
