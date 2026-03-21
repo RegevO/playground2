@@ -17,6 +17,7 @@ def process_and_verify(cf_domain):
     print(f"Step A: Downloading data from {SOURCE_URL}...")
     try:
         response = requests.get(SOURCE_URL)
+        # Checks the HTTP status code
         response.raise_for_status()
         raw_data = response.json()
     except Exception as e:
