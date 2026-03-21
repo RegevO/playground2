@@ -25,7 +25,7 @@ remote_state {
     
     s3_bucket_tags = {
       owner     = local.common_vars.owner
-      Project   = local.common_vars.Project_name
+      project   = local.common_vars.project_name
       Name      = "TerraformStateBucket"
       Terraform = "true"
     }
