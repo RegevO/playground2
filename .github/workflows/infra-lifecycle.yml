@@ -39,18 +39,21 @@ jobs:
         id: tg_action
         env:
           TG_NON_INTERACTIVE: "true"
+          # This environment variable forces Terragrunt to use the old-style run-all 
+          # which is more stable for standard folder structures in v0.98
+          TG_COMMAND_STRATEGY: "run-all" 
         run: |
           cd infra/live
           if [ "${{ github.event.inputs.action }}" == "apply" ]; then
-            # In v0.9x, 'stack apply' is the modern 'run-all apply'
-            terragrunt stack apply -- -auto-approve
+            # We use 'run --all' which is the modern bridge to 'run-all'
+            terragrunt run --all apply -- -auto-approve
             
-            # Use 'run --' to extract the output from the cloudfront module
-            CF_DOMAIN=$(cd cloudfront && terragrunt run -- output -raw domain_name)
+            # Use 'run -- output' and ensure we are in the cloudfront subdir
+            # Adding --terragrunt-no-auto-init prevents extra log noise
+            CF_DOMAIN=$(cd cloudfront && terragrunt run --terragrunt-no-auto-init -- output -raw domain_name)
             echo "CF_DOMAIN=$CF_DOMAIN" >> $GITHUB_ENV
           else
-            # 'stack destroy' handles the entire dependency tree
-            terragrunt stack destroy -- -auto-approve
+            terragrunt run --all destroy -- -auto-approve
           fi
 
       - name: Setup Python
