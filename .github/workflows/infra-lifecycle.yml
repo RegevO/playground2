@@ -33,7 +33,7 @@ jobs:
       - name: Setup Terragrunt
         uses: autero1/action-terragrunt@v3
         with:
-          terragrunt_version: 0.55.0
+          terragrunt-version: 0.55.0
 
       - name: Terragrunt Action
         id: tg_action
