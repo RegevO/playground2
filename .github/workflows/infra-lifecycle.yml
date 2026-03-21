@@ -39,12 +39,12 @@ jobs:
       
       - name: "🚀 Execute Terragrunt ${{ env.ACTION }}"
         id: tg_action
+        working-directory: infra/live
         env:
           TG_NON_INTERACTIVE: "true"
           # This environment variable forces Terragrunt to use the old-style run-all 
           # which is more stable for standard folder structures in v0.98
-          TG_COMMAND_STRATEGY: "run-all" 
-          working-directory: infra/live
+          TG_COMMAND_STRATEGY: "run-all"  
         run: |
           if [ "${{ github.event.inputs.action }}" == "apply" ]; then
             # We use 'run --all' which is the modern bridge to 'run-all'
@@ -77,3 +77,4 @@ jobs:
         if: always()
         run: |
           echo "### 🏁 Execution Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "acess url: ${{ env.CF_DOMAIN }}" >> $GITHUB_STEP_SUMMARY
