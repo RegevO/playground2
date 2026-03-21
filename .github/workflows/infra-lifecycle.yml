@@ -1,0 +1,65 @@
+name: "Infrastructure Lifecycle"
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Choose action: apply or destroy'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
+
+jobs:
+  terragrunt:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: 'us-east-1'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.0
+          terraform_wrapper: false
+
+      - name: Setup Terragrunt
+        uses: autero1/action-terragrunt@v3
+        with:
+          terragrunt_version: 0.55.0
+
+      - name: Terragrunt Action
+        id: tg_action
+        run: |
+          cd infra/live
+          if [ "${{ github.event.inputs.action }}" == "apply" ]; then
+            terragrunt run-all apply --terragrunt-non-interactive
+            
+            # Capture the CloudFront domain for the processor
+            CF_DOMAIN=$(cd cloudfront && terragrunt output -raw domain_name)
+            echo "CF_DOMAIN=$CF_DOMAIN" >> $GITHUB_ENV
+          else
+            terragrunt run-all destroy --terragrunt-non-interactive
+          fi
+
+      - name: Setup Python
+        if: github.event.inputs.action == 'apply'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        if: github.event.inputs.action == 'apply'
+        run: pip install requests boto3
+
+      - name: Run Processor & Dynamic Verify
+        if: github.event.inputs.action == 'apply'
+        run: |
+          python app/processor.py ${{ env.CF_DOMAIN }}

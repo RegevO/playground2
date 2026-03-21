@@ -14,7 +14,6 @@ dependency "s3" {
 }
 
 inputs = {
-  bucket_id                   = dependency.s3.outputs.bucket_id
   s3_bucket_domain = dependency.s3.outputs.bucket_regional_domain_name
   
   tags = {
