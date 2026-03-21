@@ -10,6 +10,7 @@ resource "aws_cloudfront_distribution" "this" {
     domain_name              = var.s3_bucket_domain
     origin_id                = "S3Origin"
     origin_access_control_id = aws_cloudfront_origin_access_control.default.id
+    
   }
 
   enabled             = true
@@ -37,5 +38,9 @@ resource "aws_cloudfront_distribution" "this" {
     minimum_protocol_version       = "TLSv1.2_2021" 
   }
 
-  tags = merge(var.tags, { Name = "ProductCloudFront" })
+  tags = merge(var.tags, {
+    Owner       = var.owner
+    Project     = var.project_name
+    ManagedBy   = "Terraform"
+  })
 }

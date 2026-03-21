@@ -3,20 +3,11 @@ variable "s3_bucket_domain" {
   type        = string 
 }
 
+variable "owner" { type = string }
+variable "project_name" { type = string }
+variable "terraform" { type = string }
+
 variable "tags" {
-  description = "Tags to apply to the distribution"
-  type        = map(string)
-  default     = {}
-}
-
-variable "owner" {
-  type = string
-}
-
-variable "project_name" {
-  type = string
-}
-
-variable "terraform" {
-  type = string
+  type = map(string)
+  description = "Unique tags for the resource"
 }

@@ -16,9 +16,8 @@ dependency "s3" {
 inputs = {
   s3_bucket_domain = dependency.s3.outputs.bucket_regional_domain_name
   
+  # Only the unique name for this specific resource
   tags = {
-    tags = {
-      Name = "ProductCloudFront"
-    }
+    Name = "ProductCloudFront"
   }
 }
