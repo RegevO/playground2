@@ -6,10 +6,7 @@ terraform {
   source = "../../modules/s3"
 }
 
-# Comment out the dependency for the first run to break the cycle
-# dependency "cloudfront" {
-#   config_path = "../cloudfront"
-# }
+
 
 inputs = {
   bucket_name    = "regev-osher-products-bucket"

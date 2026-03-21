@@ -34,15 +34,8 @@ resource "aws_cloudfront_distribution" "this" {
 
   viewer_certificate {
     cloudfront_default_certificate = true
+    minimum_protocol_version       = "TLSv1.2_2021" 
   }
 
   tags = merge(var.tags, { Name = "ProductCloudFront" })
-}
-
-output "distribution_arn" {
-  value = aws_cloudfront_distribution.this.arn
-}
-
-output "domain_name" {
-  value = aws_cloudfront_distribution.this.domain_name
 }
