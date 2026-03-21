@@ -38,9 +38,5 @@ resource "aws_cloudfront_distribution" "this" {
     minimum_protocol_version       = "TLSv1.2_2021" 
   }
 
-  tags = merge(var.tags, {
-    Owner       = var.owner
-    Project     = var.project_name
-    ManagedBy   = "Terraform"
-  })
+  tags = var.tags
 }

@@ -43,6 +43,14 @@ generate "provider" {
   contents  = <<EOF
 provider "aws" {
   region = "us-east-1"
+  
+  default_tags {
+    tags = {
+      Owner     = "${local.common_vars.owner}"
+      Project   = "${local.common_vars.project_name}"
+      ManagedBy = "Terraform"
+    }
+  }
 }
 EOF
 }
