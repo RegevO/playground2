@@ -38,18 +38,19 @@ jobs:
       - name: Terragrunt Action
         id: tg_action
         env:
-          TG_NON_INTERACTIVE: "true" # Updated from TERRAGRUNT_NON_INTERACTIVE
+          TG_NON_INTERACTIVE: "true"
         run: |
           cd infra/live
           if [ "${{ github.event.inputs.action }}" == "apply" ]; then
-            # The new 'run-all' is a top-level command in 0.98+ 
-            # and --auto-approve must be passed to terraform explicitly
-            terragrunt run-all apply --auto-approve
+            # The '--' is mandatory to forward -auto-approve to Terraform
+            terragrunt run-all apply -- -auto-approve
             
-            CF_DOMAIN=$(cd cloudfront && terragrunt output -raw domain_name)
+            # Use the new 'run' syntax for output to be safe in 0.98+
+            CF_DOMAIN=$(cd cloudfront && terragrunt run -- terragrunt output -raw domain_name)
             echo "CF_DOMAIN=$CF_DOMAIN" >> $GITHUB_ENV
           else
-            terragrunt run-all destroy --auto-approve
+            # The '--' is mandatory here too
+            terragrunt run-all destroy -- -auto-approve
           fi
 
       - name: Setup Python
