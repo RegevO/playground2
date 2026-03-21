@@ -40,13 +40,13 @@ jobs:
         run: |
           cd infra/live
           if [ "${{ github.event.inputs.action }}" == "apply" ]; then
-            terragrunt run-all apply --terragrunt-non-interactive
+            terragrunt run-all apply --auto-approve
             
             # Capture the CloudFront domain for the processor
             CF_DOMAIN=$(cd cloudfront && terragrunt output -raw domain_name)
             echo "CF_DOMAIN=$CF_DOMAIN" >> $GITHUB_ENV
           else
-            terragrunt run-all destroy --terragrunt-non-interactive
+            terragrunt run-all destroy --auto-approve
           fi
 
       - name: Setup Python
