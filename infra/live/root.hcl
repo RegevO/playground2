@@ -3,7 +3,11 @@ locals {
 }
 
 # Inject the common variables into every child module automatically
-inputs = local.common_vars
+inputs = {
+  owner        = local.common_vars.owner
+  project_name = local.common_vars.project_name
+  terraform    = local.common_vars.terraform
+}
 
 remote_state {
   backend = "s3"
@@ -20,7 +24,7 @@ remote_state {
     dynamodb_table = "terraform-lock-table"
     
     s3_bucket_tags = {
-      Owner     = local.common_vars.Owner
+      owner     = local.common_vars.owner
       Project   = local.common_vars.Project_name
       Name      = "TerraformStateBucket"
       Terraform = "true"

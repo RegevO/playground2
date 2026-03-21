@@ -8,3 +8,15 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "owner" {
+  type = string
+}
+
+variable "project_name" {
+  type = string
+}
+
+variable "terraform" {
+  type = string
+}
