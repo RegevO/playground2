@@ -3,26 +3,17 @@ variable "bucket_name" {
   type        = string  
 }
 
-variable "tags" {
-  description = "Tags to apply to the bucket"
-  type        = map(string)
-  default     = {}
-}
-
 variable "cloudfront_arn" {
   description = "The ARN of the CloudFront distribution"
   type        = string
   default     = null
 }
 
-variable "owner" {
-  type = string
-}
+variable "owner" { type = string }
+variable "project_name" { type = string }
+variable "terraform" { type = string }
 
-variable "project_name" {
-  type = string
-}
-
-variable "terraform" {
-  type = string
+variable "tags" {
+  type = map(string)
+  # This will now only receive { Name = "ProductCloudFront" }
 }
