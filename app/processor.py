@@ -40,7 +40,7 @@ def process_and_verify(cf_domain):
     }
 
     # C. Upload to S3
-    print(f"Step C: Uploading filtered JSON to S3 bucket: {BUCKET_NAME}...")
+    print(f"Step C: Uploading filtered JSON to S3 bucket: {BUCKET_NAME}")
     try:
         # Note: In GitHub Actions, this uses the AWS credentials provided in the workflow
         s3 = boto3.client('s3')
@@ -56,7 +56,7 @@ def process_and_verify(cf_domain):
         sys.exit(1)
 
     # D. Download via CloudFront and Verify
-    print(f"Step D: Verifying data via CloudFront: {CF_URL}...")
+    print(f"Step D: Verifying data via CloudFront: {CF_URL}")
     try:
         # Using a small timeout; CloudFront with OAC is usually very fast after upload
         cf_response = requests.get(CF_URL, timeout=15)
