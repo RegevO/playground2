@@ -37,18 +37,17 @@ jobs:
 
       - name: Terragrunt Action
         id: tg_action
-        env:
-          TF_VAR_auto_approve: true # Standard fallback
         run: |
           cd infra/live
           if [ "${{ github.event.inputs.action }}" == "apply" ]; then
-            # Using the --terragrunt-non-interactive at the end
-            terragrunt run-all apply --terragrunt-non-interactive
+            # Move the flag BEFORE 'run-all'
+            terragrunt --terragrunt-non-interactive run-all apply --auto-approve
             
             CF_DOMAIN=$(cd cloudfront && terragrunt output -raw domain_name)
             echo "CF_DOMAIN=$CF_DOMAIN" >> $GITHUB_ENV
           else
-            terragrunt run-all destroy --terragrunt-non-interactive
+            # Move the flag BEFORE 'run-all'
+            terragrunt --terragrunt-non-interactive run-all destroy --auto-approve
           fi
 
       - name: Setup Python
